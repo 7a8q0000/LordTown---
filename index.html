@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSB | TERMINAL BARBATOV</title>
+    <title>FSB | محطة برباتوف</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     
@@ -23,7 +23,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: 'Tajawal', 'Share Tech Mono', monospace;
+            font-family: 'Tajawal', 'Share Tech Mono', sans-serif;
             padding: 15px;
             direction: rtl;
             overflow-x: hidden;
@@ -52,11 +52,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Share Tech Mono', monospace;
             color: var(--orange);
             transition: opacity 1s ease-out;
         }
-        .boot-text { font-size: 1.2rem; text-shadow: 0 0 10px var(--orange); }
+        .boot-text { font-size: 1.4rem; font-weight: bold; text-shadow: 0 0 10px var(--orange); }
         .boot-spinner { margin-top: 20px; font-size: 2rem; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -82,9 +81,9 @@
         .cyber-box::after {
             content: '';
             position: absolute;
-            bottom: 0; right: 0;
+            bottom: 0; left: 0; /* تم عكسها لتناسب اللغة العربية */
             border-bottom: 20px solid var(--orange);
-            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
         }
 
         /* الهيدر */
@@ -98,11 +97,11 @@
         }
 
         .header h1 {
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Share Tech Mono', sans-serif;
             font-size: 1.5rem;
             color: var(--orange);
             text-shadow: 0 0 8px var(--orange);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin: 0;
         }
 
@@ -114,7 +113,7 @@
             font-size: 0.9rem;
             cursor: pointer;
             font-family: 'Tajawal', sans-serif;
-            text-transform: uppercase;
+            font-weight: bold;
             position: relative;
             transition: all 0.2s;
         }
@@ -157,8 +156,9 @@
         }
 
         .msg-item {
-            background: linear-gradient(90deg, rgba(255,85,0,0.1) 0%, transparent 100%);
-            border-right: 3px solid var(--orange);
+            background: linear-gradient(270deg, rgba(255,85,0,0.1) 0%, transparent 100%);
+            border-left: 3px solid var(--orange); /* خط الشاشة في اليمين/اليسار */
+            border-right: none;
             padding: 12px;
             animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             position: relative;
@@ -170,7 +170,7 @@
         }
 
         .msg-meta { font-size: 0.75rem; color: #a55a30; margin-bottom: 4px; display: flex; justify-content: space-between; }
-        .msg-sender { color: var(--orange); font-weight: bold; letter-spacing: 1px; font-family: 'Share Tech Mono', monospace;}
+        .msg-sender { color: var(--orange); font-weight: bold; letter-spacing: 1px; }
         .msg-body { font-size: 1.3rem; color: #fff; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 5px var(--orange-glow); font-family: 'Share Tech Mono', monospace;}
 
         /* المدخلات (Inputs) */
@@ -182,7 +182,7 @@
             color: var(--orange);
             padding: 12px;
             font-size: 1rem;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Tajawal', sans-serif;
             margin-bottom: 12px;
             outline: none;
             transition: 0.3s;
@@ -202,10 +202,10 @@
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
         }
         .modal-box h3 { color: var(--alert-red); margin-bottom: 15px; text-shadow: 0 0 5px var(--alert-red); }
-        .modal-box input { border-color: var(--alert-red); color: var(--alert-red); text-align: center; font-size: 1.5rem; letter-spacing: 10px; }
+        .modal-box input { border-color: var(--alert-red); color: var(--alert-red); text-align: center; font-size: 1.5rem; letter-spacing: 10px; font-family: 'Share Tech Mono';}
         
         .btn-row { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-modal { flex: 1; padding: 10px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-modal { flex: 1; padding: 10px; border: none; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
         .btn-accept { background: var(--alert-red); color: #fff; }
         .btn-deny { background: transparent; border: 1px solid #555; color: #888; }
         
@@ -215,7 +215,7 @@
         /* لوحة المسؤولين */
         #adminPanel { display: none; margin-top: 20px; border-color: var(--alert-red); }
         #adminPanel::after { border-bottom-color: var(--alert-red); }
-        #adminPanel h3 { color: var(--alert-red); }
+        #adminPanel h3 { color: var(--alert-red); font-size: 1.1rem; }
         
     </style>
 </head>
@@ -223,7 +223,7 @@
 
 <!-- شاشة الإقلاع (Boot Sequence) -->
 <div id="boot-screen">
-    <div class="boot-text" id="bootText">INTIALIZING FSB SECURE PROTOCOL...</div>
+    <div class="boot-text" id="bootText">جاري تهيئة بروتوكول FSB الآمن...</div>
     <div class="boot-spinner">⚙</div>
 </div>
 
@@ -231,34 +231,34 @@
     <!-- الهيدر -->
     <div class="cyber-box">
         <div class="header">
-            <h1>[ FSB_SYS ]</h1>
-            <button class="btn-glitch" onclick="openAuth()">[ AUTH_ADMIN ]</button>
+            <h1>[ نظام_FSB ]</h1>
+            <button class="btn-glitch" onclick="openAuth()">[ صلاحيات_المسؤول ]</button>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #885533;">
-            <span>STATUS: <span id="connStatus" style="color:var(--alert-red);">OFFLINE</span></span>
-            <span>CHANNEL: SECURE_99</span>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #885533; font-weight: bold;">
+            <span>حالة الشبكة: <span id="connStatus" style="color:var(--alert-red);">غير متصل</span></span>
+            <span>القناة: SECURE_99</span>
         </div>
     </div>
 
     <!-- زر التفعيل -->
-    <button id="connectBtn" class="btn-activate" onclick="initNetwork()">[ INITIATE CONNECTION & AUDIO ]</button>
+    <button id="connectBtn" class="btn-activate" onclick="initNetwork()">[ تهيئة الاتصال وتشغيل الإنذار ]</button>
 
     <!-- شاشة البيجر الرئيسية -->
     <div class="cyber-box" style="padding: 5px;">
         <div class="screen-display" id="pagerDisplay">
-            <div style="text-align: center; color: #553322; margin-top: 120px; font-family: 'Share Tech Mono'; letter-spacing: 2px;">WAITING FOR SIGNAL...</div>
+            <div style="text-align: center; color: #553322; margin-top: 120px; font-weight: bold; letter-spacing: 1px;">في انتظار استقبال الإشارات...</div>
         </div>
     </div>
 
     <!-- لوحة المسؤولين -->
     <div class="cyber-box" id="adminPanel">
-        <h3 style="margin-bottom: 15px; border-bottom: 1px dashed var(--alert-red); padding-bottom: 5px; display: flex; justify-content: space-between;">
-            <span>[ ENCRYPTED TRANSMIT ]</span>
-            <button onclick="closeAdmin()" style="background:none; border:none; color:#666; cursor:pointer;">[X]</button>
+        <h3 style="margin-bottom: 15px; border-bottom: 1px dashed var(--alert-red); padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;">
+            <span>[ بث مشفر ]</span>
+            <button onclick="closeAdmin()" style="background:none; border:none; color:#666; cursor:pointer; font-weight: bold;">[إغلاق]</button>
         </h3>
-        <input type="text" id="senderName" value="BARBATOV_01" placeholder="SENDER_ID">
-        <input type="text" id="cipherText" placeholder="ENTER CIPHER (ex: 24-28-25-1)">
-        <button class="btn-activate" style="background:var(--alert-red); border-color:#fff;" onclick="sendCipher()">[ TRANSMIT SIGNAL ]</button>
+        <input type="text" id="senderName" value="برباتوف" placeholder="معرف المرسل (الاسم)">
+        <input type="text" id="cipherText" placeholder="أدخل الشفرة (مثال: 24-28-25-1)">
+        <button class="btn-activate" style="background:var(--alert-red); border-color:#fff; margin-bottom: 0;" onclick="sendCipher()">[ إرسال الإشارة ]</button>
     </div>
 
 </div>
@@ -266,12 +266,12 @@
 <!-- نافذة الاختراق / تسجيل الدخول -->
 <div class="modal-bg" id="authModal">
     <div class="modal-box">
-        <h3>ACCESS RESTRICTED</h3>
+        <h3>الوصول مقيد للقيادة</h3>
         <input type="password" id="pinInput" placeholder="****" maxlength="4" onkeydown="if(event.key==='Enter') verifyPin()">
-        <div class="error-txt" id="pinError">ACCESS DENIED - INVALID PIN</div>
+        <div class="error-txt" id="pinError">تم الرفض - الرمز السري غير صالح</div>
         <div class="btn-row">
-            <button class="btn-modal btn-accept" onclick="verifyPin()">DECRYPT</button>
-            <button class="btn-modal btn-deny" onclick="closeAuth()">ABORT</button>
+            <button class="btn-modal btn-accept" onclick="verifyPin()">فك التشفير والدخول</button>
+            <button class="btn-modal btn-deny" onclick="closeAuth()">إلغاء</button>
         </div>
     </div>
 </div>
@@ -279,7 +279,7 @@
 <script>
     // --- شاشة الإقلاع الوهمية ---
     window.onload = () => {
-        let texts = ["ESTABLISHING SECURE CONNECTION...", "BYPASSING FIREWALLS...", "DECRYPTING PROTOCOLS...", "SYSTEM READY."];
+        let texts = ["جاري إنشاء اتصال مشفر...", "جاري تخطي جدران الحماية...", "جاري فك تشفير البروتوكولات...", "النظام جاهز للاستخدام."];
         let idx = 0;
         let bootInt = setInterval(() => {
             idx++;
@@ -290,12 +290,12 @@
                 document.getElementById('boot-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 1000);
             }
-        }, 600);
+        }, 700);
     };
 
     // --- إعدادات الشبكة ---
     const ADMIN_PIN = "7777";
-    const SECRET_CHANNEL = "lordtown_fsb_cyber_v1";
+    const SECRET_CHANNEL = "lordtown_fsb_cyber_v1_ar";
     let client;
     let isConnected = false;
     let audioCtx;
@@ -305,15 +305,15 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
 
         const btn = document.getElementById('connectBtn');
-        btn.innerText = "[ CONNECTION ESTABLISHED ]";
+        btn.innerText = "[ تم الاتصال بالشبكة بنجاح ]";
         btn.style.background = "var(--orange)";
         btn.style.color = "#000";
-        document.getElementById('connStatus').innerText = "ONLINE";
+        document.getElementById('connStatus').innerText = "متصل";
         document.getElementById('connStatus').style.color = "var(--orange)";
 
         const clientID = "fsb_cyber_" + Math.random().toString(16).substr(2, 8);
         client = new Paho.MQTT.Client("broker.hivemq.com", 8884, clientID);
-        client.onConnectionLost = () => { isConnected = false; document.getElementById('connStatus').innerText = "OFFLINE"; setTimeout(initNetwork, 3000); };
+        client.onConnectionLost = () => { isConnected = false; document.getElementById('connStatus').innerText = "غير متصل"; document.getElementById('connStatus').style.color = "var(--alert-red)"; setTimeout(initNetwork, 3000); };
         client.onMessageArrived = onMessageArrived;
         client.connect({ onSuccess: () => { isConnected = true; client.subscribe(SECRET_CHANNEL); }, useSSL: true });
     }
@@ -342,8 +342,8 @@
 
     // --- إرسال واستقبال الشفرات ---
     function sendCipher() {
-        if (!isConnected) return alert("System Offline. Click Initiate Connection first.");
-        const sender = document.getElementById('senderName').value || "UNKNOWN";
+        if (!isConnected) return alert("النظام غير متصل. يرجى الضغط على زر تهيئة الاتصال أولاً.");
+        const sender = document.getElementById('senderName').value || "مجهول";
         const code = document.getElementById('cipherText').value;
         if (!code) return;
 
@@ -362,16 +362,16 @@
         playCyberBeep();
 
         const display = document.getElementById('pagerDisplay');
-        if (display.innerHTML.includes("WAITING FOR SIGNAL")) display.innerHTML = "";
+        if (display.innerHTML.includes("في انتظار استقبال الإشارات")) display.innerHTML = "";
 
         const msgDiv = document.createElement('div');
         msgDiv.className = 'msg-item';
         msgDiv.innerHTML = `
             <div class="msg-meta">
-                <span class="msg-sender">[ ${data.sender} ] // DECRYPTED</span>
-                <span>T-${data.time}</span>
+                <span class="msg-sender">[ ${data.sender} ] // مفكوك التشفير</span>
+                <span style="font-family: 'Share Tech Mono';">T-${data.time}</span>
             </div>
-            <div class="msg-body">> ${data.code}</div>
+            <div class="msg-body">${data.code}</div>
         `;
         
         display.prepend(msgDiv); // يضيف الرسالة في الأعلى
