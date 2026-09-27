@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FSB | شبكة بيجر برباتوف البرتقالية</title>
+    <title>FSB | بيجر برباتوف التكتيكي</title>
     <!-- مكتبة الاتصال المباشر عبر السحابة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <style>
@@ -14,8 +14,8 @@
             --orange: #ff6600;
             --orange-glow: rgba(255, 102, 0, 0.4);
             --amber: #ffb700;
+            --red: #ff2a4b;
             --border: #332115;
-            --border-bright: #ff6600;
             --text: #f5eedc;
             --dim: #998371;
         }
@@ -28,40 +28,58 @@
             padding: 12px;
             direction: rtl;
             background-image: radial-gradient(circle at 50% 0%, rgba(255, 102, 0, 0.08) 0%, transparent 70%);
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 550px;
             margin: 0 auto;
         }
 
+        /* الهيدر وزر المسؤولين */
         .header {
-            text-align: center;
-            padding: 18px;
             background: var(--panel);
             border: 1px solid var(--orange);
             border-radius: 10px;
+            padding: 14px;
             margin-bottom: 14px;
             box-shadow: 0 0 20px var(--orange-glow);
             position: relative;
-            overflow: hidden;
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
         }
 
         .header h1 {
             color: var(--orange);
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
             text-shadow: 0 0 10px var(--orange-glow);
+        }
+
+        .btn-admin-trigger {
+            background: #261205;
+            color: var(--orange);
+            border: 1px solid var(--orange);
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-admin-trigger:hover {
+            background: var(--orange);
+            color: #000;
+            box-shadow: 0 0 10px var(--orange-glow);
         }
 
         .status-bar {
@@ -85,6 +103,7 @@
             box-shadow: 0 0 12px var(--orange); 
         }
 
+        /* زر تفعيل الصوت والبيجر */
         .btn-connect {
             width: 100%;
             background: linear-gradient(135deg, #ff6600, #d94b00);
@@ -98,11 +117,11 @@
             margin-bottom: 14px;
             box-shadow: 0 4px 15px var(--orange-glow);
             transition: all 0.2s ease;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .btn-connect:active { transform: scale(0.98); }
 
+        /* الكروت والشاشات */
         .card {
             background: var(--panel);
             border: 1px solid var(--border);
@@ -119,48 +138,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 8px;
         }
 
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: var(--panel-dark);
-            border: 1px solid var(--border);
-            color: var(--amber);
-            font-size: 1rem;
-            font-family: monospace;
-            border-radius: 6px;
-            outline: none;
-            margin-bottom: 10px;
-            transition: border 0.3s;
-        }
-
-        input:focus { border-color: var(--orange); box-shadow: 0 0 8px var(--orange-glow); }
-
-        .btn-send {
-            width: 100%;
-            background: var(--amber);
-            color: #000;
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-send:hover { background: #ffa000; }
-
+        /* شاشة البيجر الرئيسية */
         .pager-display {
             background: #050403;
             border: 2px solid var(--orange);
             border-radius: 8px;
             padding: 12px;
-            min-height: 180px;
-            max-height: 320px;
+            min-height: 320px;
+            max-height: 500px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -179,44 +166,115 @@
 
         .msg-time { font-size: 0.65rem; color: var(--dim); }
         .msg-sender { font-size: 0.8rem; color: var(--amber); font-weight: bold; }
-        .msg-text { font-size: 1.15rem; color: var(--orange); font-weight: bold; margin-top: 3px; word-break: break-all; font-family: monospace; }
+        .msg-text { font-size: 1.2rem; color: var(--orange); font-weight: bold; margin-top: 3px; word-break: break-all; font-family: monospace; }
 
-        /* أدوات الشفرة السريعة */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        /* لوحة المسؤولين المخفية */
+        .admin-panel {
+            border: 1px solid var(--orange);
+            background: #1c150f;
+            display: none;
         }
 
-        .result-box {
-            background: #050403;
-            border: 1px dashed var(--orange);
-            color: var(--orange);
-            padding: 10px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.95rem;
-            min-height: 42px;
-            word-break: break-all;
-        }
-
-        .cipher-table {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 8px;
-        }
-
-        .cipher-item {
+        input {
+            width: 100%;
+            padding: 12px;
             background: var(--panel-dark);
             border: 1px solid var(--border);
-            text-align: center;
-            padding: 6px 2px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            color: var(--amber);
+            font-size: 1rem;
+            font-family: monospace;
+            border-radius: 6px;
+            outline: none;
+            margin-bottom: 10px;
         }
 
-        .cipher-item span { color: var(--orange); font-weight: bold; display: block; font-size: 0.75rem; }
+        input:focus { border-color: var(--orange); box-shadow: 0 0 8px var(--orange-glow); }
+
+        .btn-send {
+            width: 100%;
+            background: var(--amber);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-logout {
+            background: #3a1208;
+            color: #ff6666;
+            border: 1px solid #ff3333;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* النافذة المنبثقة لطلب رمز المسؤولين (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border: 2px solid var(--orange);
+            box-shadow: 0 0 25px var(--orange-glow);
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--orange);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            background: var(--orange);
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #221a14;
+            color: var(--dim);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .error-msg {
+            color: var(--red);
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-5px); }
@@ -228,73 +286,66 @@
 
 <div class="container">
 
-    <!-- الهيدر -->
+    <!-- الهيدر الرئيسي -->
     <div class="header">
-        <h1>🚨 FSB ORANGE PAGER</h1>
+        <div class="top-row">
+            <h1>🚨 FSB PAGER NETWORK</h1>
+            <button class="btn-admin-trigger" onclick="openAdminModal()">🔐 لوحة المسؤولين</button>
+        </div>
         <div class="status-bar">
-            <span>القناة المشفرة: <b style="color:var(--orange)">BARBATOV-NET</b></span>
-            <span>الاتصال: <span id="statusDot" class="dot"></span></span>
+            <span>القناة: <b style="color:var(--orange)">BARBATOV-NET</b></span>
+            <span>حالة الشبكة: <span id="statusDot" class="dot"></span></span>
         </div>
     </div>
 
-    <!-- زر تفعيل البيجر -->
+    <!-- زر تفعيل البيجر والصوت -->
     <button id="connectBtn" class="btn-connect" onclick="initNetwork()">🔥 تفعيل البيجر وتشغيل الصوت المباشر</button>
 
-    <!-- شاشة البيجر المباشرة -->
+    <!-- شاشة البيجر المباشرة (فقط بيجر) -->
     <div class="card">
         <h3>📥 شاشة البيجر المباشرة <span style="font-size:0.75rem; color:var(--orange)">● LIVE</span></h3>
         <div class="pager-display" id="pagerDisplay">
-            <div style="color: var(--dim); text-align: center; margin-top: 70px;">في انتظار بث الإشارات البرتقالية...</div>
+            <div style="color: var(--dim); text-align: center; margin-top: 130px;">في انتظار بث الإشارات...</div>
         </div>
     </div>
 
-    <!-- لوحة إرسال الشفرات -->
-    <div class="card">
-        <h3>🔒 بث شفرة جديدة</h3>
+    <!-- لوحة إرسال المسؤولين (تظهر بعد إدخال الرمز الصحيح فقط) -->
+    <div class="card admin-panel" id="adminPanel">
+        <h3>
+            <span>⚙️ لوحة بث الشفرات (المسؤولين)</span>
+            <button class="btn-logout" onclick="logoutAdmin()">تسجيل خروج</button>
+        </h3>
         <input type="text" id="senderName" value="إيزاك برباتوف" placeholder="اسم المرسل">
         <input type="text" id="cipherText" placeholder="أدخل الشفرة (مثال: 24-28-25-1)">
-        <button class="btn-send" onclick="sendCipher()">🚀 بث الإشارة الآن</button>
-    </div>
-
-    <!-- المحول السريع -->
-    <div class="card">
-        <h3>🛠️ محول الشفرات السريع (إيزاك / الهنوف)</h3>
-        <div class="tools-grid">
-            <div>
-                <input type="text" id="textToEncode" placeholder="اكتب الكلمة" oninput="quickEncode()">
-                <div class="result-box" id="encodedOut">الشفرة...</div>
-            </div>
-            <div>
-                <input type="text" id="codeToDecode" placeholder="اكتب الأرقام" oninput="quickDecode()">
-                <div class="result-box" id="decodedOut" style="color:var(--amber)">النص...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- جدول المفتاح -->
-    <div class="card">
-        <h3>🔑 جدول الشفرات الأبجدي (1 - 28)</h3>
-        <div class="cipher-table" id="cipherTable"></div>
+        <button class="btn-send" onclick="sendCipher()">🚀 بث الشفرة عبر البيجر</button>
     </div>
 
 </div>
 
+<!-- نافذة ادخال رمز المسؤولين (Modal) -->
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-content">
+        <h3>🔐 إدخال رمز المسؤولين</h3>
+        <p style="font-size:0.8rem; color:var(--dim); margin-bottom:12px;">أدخل الرمز السرّي لتأكيد صلاحيات الإرسال</p>
+        
+        <input type="password" id="adminPinInput" placeholder="أدخل الرمز هنا" maxlength="15" onkeydown="if(event.key==='Enter') verifyPin()">
+        <div class="error-msg" id="modalError">⚠️ الرمز خاطئ! تم رفض الدخول.</div>
+        
+        <div class="modal-buttons">
+            <button class="btn-confirm" onclick="verifyPin()">دخول</button>
+            <button class="btn-cancel" onclick="closeAdminModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // 🔑 الرمز السري الخاص بالمسؤولين (تقدر تغيره من هنا)
+    const ADMIN_PIN = "7777";
+
     const SECRET_CHANNEL = "lordtown_barbatov_orange_v99";
-    const alphabet = ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'];
-    
     let client;
     let isConnected = false;
     let audioCtx;
-
-    // بناء جدول المفتاح
-    const cipherTable = document.getElementById('cipherTable');
-    alphabet.forEach((char, idx) => {
-        const item = document.createElement('div');
-        item.className = 'cipher-item';
-        item.innerHTML = `<span>${idx + 1}</span>${char}`;
-        cipherTable.appendChild(item);
-    });
 
     // الاتصال بالشبكة وتفعيل الصوت
     function initNetwork() {
@@ -303,14 +354,14 @@
             audioCtx.resume();
         }
 
-        document.getElementById('connectBtn').innerText = "✅ البيجر متصل والتنبيه البرتقالي يعمل";
+        document.getElementById('connectBtn').innerText = "✅ البيجر متصل والتنبيه يعمل";
         document.getElementById('connectBtn').style.background = "#261205";
         document.getElementById('connectBtn').style.color = "#ff6600";
         document.getElementById('connectBtn').style.border = "1px solid #ff6600";
 
-        const clientID = "fsb_orange_pager_" + Math.random().toString(16).substr(2, 8);
+        const clientID = "fsb_pager_" + Math.random().toString(16).substr(2, 8);
         
-        // الاتصال بخادم HiveMQ المباشر (SSL)
+        // الاتصال المباشر المشفر SSL عبر منفذ 8884
         client = new Paho.MQTT.Client("broker.hivemq.com", 8884, clientID);
 
         client.onConnectionLost = onConnectionLost;
@@ -334,7 +385,36 @@
         setTimeout(initNetwork, 3000);
     }
 
-    // إرسال الشفرة
+    // إدارة نافذة لوحة المسؤولين والرمز السرّي
+    function openAdminModal() {
+        document.getElementById('adminPinInput').value = "";
+        document.getElementById('modalError').style.display = "none";
+        document.getElementById('adminModal').style.display = "flex";
+        document.getElementById('adminPinInput').focus();
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').style.display = "none";
+    }
+
+    function verifyPin() {
+        const inputPin = document.getElementById('adminPinInput').value.trim();
+        if (inputPin === ADMIN_PIN) {
+            closeAdminModal();
+            document.getElementById('adminPanel').style.display = "block";
+            // التمرير التلقائي للوحة الإرسال
+            document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            document.getElementById('modalError').style.display = "block";
+            document.getElementById('adminPinInput').value = "";
+        }
+    }
+
+    function logoutAdmin() {
+        document.getElementById('adminPanel').style.display = "none";
+    }
+
+    // إرسال الشفرة من لوحة المسؤولين
     function sendCipher() {
         const sender = document.getElementById('senderName').value.trim() || "مجهول";
         const code = document.getElementById('cipherText').value.trim();
@@ -345,7 +425,7 @@
         }
 
         if (!isConnected) {
-            alert("اضغط على زر 'تفعيل البيجر' البرتقالي بالشارع في الأعلى أولاً!");
+            alert("اضغط على زر 'تفعيل البيجر' في الأعلى أولاً!");
             return;
         }
 
@@ -362,11 +442,11 @@
         document.getElementById('cipherText').value = "";
     }
 
-    // استقبال الشفرات وتعديل الشاشة وتشغيل الصوت
+    // استقبال الشفرات وتعديل شاشة البيجر المباشرة مع الصوت
     function onMessageArrived(message) {
         const data = JSON.parse(message.payloadString);
         
-        // 1. تشغيل صوت صفير البيجر العسكري البرتقالي
+        // 1. تشغيل صوت البيجر العسكري البرتقالي
         playBeep();
 
         // 2. تحديث الشاشة
@@ -386,14 +466,14 @@
         display.innerHTML = msgHTML + display.innerHTML;
     }
 
-    // صوت صفير بيجر حاد وحماسي Dual-Beep
+    // صوت صفير بيجر تكتيكي برتقالي (Dual-Beep)
     function playBeep() {
         if (!audioCtx) return;
         try {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            osc.type = 'sawtooth'; // صوت حاد وتكتيكي
+            osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(1100, audioCtx.currentTime);
             osc.frequency.setValueAtTime(1600, audioCtx.currentTime + 0.08);
 
@@ -408,36 +488,6 @@
         } catch (e) {
             console.log(e);
         }
-    }
-
-    // أدوات التحويل السريع
-    function quickEncode() {
-        const input = document.getElementById('textToEncode').value.trim();
-        if (!input) { document.getElementById('encodedOut').innerText = "الشفرة..."; return; }
-        
-        let res = [];
-        for (let char of input) {
-            if (['أ', 'إ', 'آ', 'ا'].includes(char)) char = 'أ';
-            if (char === 'ه') char = 'هـ';
-            const idx = alphabet.indexOf(char);
-            if (idx !== -1) res.push(idx + 1);
-            else if (char === ' ') res.push('/');
-        }
-        document.getElementById('encodedOut').innerText = res.join(' - ') || '---';
-    }
-
-    function quickDecode() {
-        const input = document.getElementById('codeToDecode').value.trim();
-        if (!input) { document.getElementById('decodedOut').innerText = "النص..."; return; }
-        
-        const nums = input.split(/[-,\s]+/);
-        let res = '';
-        nums.forEach(n => {
-            const val = parseInt(n.trim());
-            if (val >= 1 && val <= 28) res += alphabet[val - 1];
-            else if (n === '/') res += ' ';
-        });
-        document.getElementById('decodedOut').innerText = res || '---';
     }
 </script>
 
